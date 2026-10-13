@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Partner Demand Calculator - FY 2027</title>
+<style>
+:root{--blue:#0070F2;--dark:#1D2D3E;--gold:#E8A000;--bg:#F4F6F9;--card:#FFF;--border:#D9D9D9;--text:#32363A;--muted:#6A7278;--green:#188918;--indigo:#6B2ADB}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* Header */
+.hdr{background:var(--dark);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:64px}
+.hdr-logo{display:flex;align-items:center;gap:14px}
+.hdr-mark{color:#fff;font-weight:700;font-size:22px;letter-spacing:.3px}
+.hdr-sub{color:rgba(255,255,255,.55);font-size:14px;font-weight:400;margin-left:4px}
+.hdr-badge{background:rgba(255,255,255,.12);color:#fff;font-weight:600;padding:5px 16px;border-radius:12px;font-size:14px;letter-spacing:.3px}
+
+/* Layout */
+.wrap{max-width:980px;margin:0 auto;padding:30px 32px}
+
+/* Cards */
+.card{background:var(--card);border-radius:8px;border:1px solid var(--border);padding:26px;margin-bottom:24px}
+.card-hd{font-size:17px;font-weight:600;color:var(--dark);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.card-icon{width:28px;height:28px;background:var(--blue);border-radius:6px;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700;flex-shrink:0}
+
+/* Form */
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg label{font-size:14px;font-weight:600;color:var(--text)}
+.fg .hint{font-size:13px;color:var(--muted);font-weight:400;line-height:1.3}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+input[type=text],input[type=number]{height:40px;border:1px solid var(--border);border-radius:4px;padding:0 12px;font-size:15px;color:var(--text);width:100%;outline:none;transition:.15s;font-family:inherit}
+input:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(0,112,242,.1)}
+input:disabled{background:#F5F5F5;color:#888}
+.inp-wrap{position:relative}
+.inp-wrap .pfx{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none}
+.inp-wrap .sfx{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none}
+.inp-wrap input.has-pfx{padding-left:28px}
+.inp-wrap input.has-sfx{padding-right:28px}
+
+/* Results */
+.res-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.res-card{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+.res-card.hl{background:linear-gradient(135deg,#EBF4FF,#F0F8FF);border-color:var(--blue)}
+.res-card.pri{background:linear-gradient(135deg,#0070F2,#005DC7);border-color:#005DC7;color:#fff}
+.res-step{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:3px}
+.res-card.pri .res-step{color:rgba(255,255,255,.65)}
+.res-lbl{font-size:14px;font-weight:500;color:var(--text);margin-bottom:6px;line-height:1.3}
+.res-card.pri .res-lbl{color:rgba(255,255,255,.85)}
+.res-val{font-size:26px;font-weight:700;color:var(--blue);line-height:1}
+.res-card.pri .res-val{color:#fff}
+.res-unit{font-size:13px;color:var(--muted);margin-top:3px}
+.res-card.pri .res-unit{color:rgba(255,255,255,.6)}
+
+/* Funnel */
+.funnel{display:flex;flex-direction:column;align-items:center;gap:0;padding:10px 0}
+.fn-row{display:flex;align-items:center;gap:12px;width:100%;max-width:700px;margin-bottom:6px}
+.fn-bar{height:40px;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:600;transition:width .5s ease;min-width:70px;white-space:nowrap;padding:0 14px}
+.fn-lbl{font-size:14px;color:var(--muted);min-width:180px;text-align:right}
+.fn-arrow{text-align:center;color:var(--muted);font-size:15px;width:100%;max-width:700px;margin-bottom:2px}
+
+/* Button */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:10px 28px;border-radius:4px;font-size:16px;font-weight:600;cursor:pointer;border:none;transition:.15s;font-family:inherit}
+.btn-p{background:var(--blue);color:#fff}.btn-p:hover{background:#005DC7}
+.btn-s{background:#fff;color:var(--blue);border:1px solid var(--blue)}.btn-s:hover{background:#EBF4FF}
+.btn-g{background:var(--green);color:#fff}.btn-g:hover{background:#0D6B14}
+.btn-center{display:flex;justify-content:center;margin-top:22px;gap:12px}
+
+/* Info */
+.info{background:#EBF4FF;border-left:4px solid var(--blue);border-radius:0 4px 4px 0;padding:12px 18px;margin-bottom:20px;font-size:15px;line-height:1.5}
+
+/* Tooltip */
+.tip{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;background:var(--muted);color:#fff;border-radius:50%;font-size:11px;font-weight:700;cursor:help;margin-left:3px;position:relative}
+.tip:hover::after{content:attr(data-tip);position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:var(--dark);color:#fff;font-size:13px;font-weight:400;padding:6px 10px;border-radius:4px;z-index:99;max-width:300px;white-space:normal;line-height:1.3;width:max-content}
+
+/* Footer */
+.ftr{background:var(--dark);color:rgba(255,255,255,.55);padding:16px 32px;font-size:13px;margin-top:30px;display:flex;align-items:center;justify-content:space-between}
+.ftr .btn{height:32px;font-size:13px;padding:6px 16px}
+
+/* Hidden state for results */
+.results-hidden .res-grid,
+.results-hidden #funnelBox,
+.results-hidden .btn-center{opacity:.15;pointer-events:none}
+
+/* PDF button bar - hidden until calculated */
+#pdfBar{display:none}
+#pdfBar.show{display:flex;justify-content:center;margin-top:20px;gap:12px}
+
+/* Disclaimer */
+.disclaimer{font-size:12px;color:var(--muted);text-align:center;padding:10px 32px 18px;line-height:1.5}
+
+/* Responsive */
+@media(max-width:768px){.grid3{grid-template-columns:1fr}.res-grid{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}
+@media(max-width:500px){.wrap{padding:16px}.res-grid{grid-template-columns:1fr}}
+@media print{.btn-center,.ftr,.no-print,#pdfBar,.info,.disclaimer{display:none!important}.card{break-inside:avoid}body{background:#fff}.wrap{max-width:none;padding:10px}}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="hdr">
+  <div class="hdr-logo">
+    <span class="hdr-mark">Partner Demand Calculator</span>
+    <span class="hdr-sub">Indirect Demand Management</span>
+  </div>
+  <div class="hdr-badge">FY 2027</div>
+</div>
+
+<div class="wrap">
+
+  <!-- Instructions -->
+  <div class="info">
+    Use this calculator to determine the demand generation activity required to meet your FY 2027 cloud bookings target. Fill in your inputs below, then press <strong>Calculate</strong> to see your full demand funnel: from required pipeline volume through to your Total Addressable Market (TAM).
+  </div>
+
+  <!-- Section 1: Partner Information -->
+  <div class="card">
+    <div class="card-hd"><div class="card-icon">P</div> Partner Information</div>
+    <div class="grid2">
+      <div class="fg">
+        <label>Partner Name</label>
+        <input type="text" id="partnerName" placeholder="Enter your company name">
+      </div>
+      <div class="fg">
+        <label>Fiscal Year</label>
+        <input type="text" value="FY 2027" disabled>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: Your Inputs -->
+  <div class="card">
+    <div class="card-hd"><div class="card-icon">1</div> Your Inputs</div>
+    <div class="grid3">
+      <div class="fg">
+        <label>2027 Cloud Bookings Target (kEUR) <span class="tip" data-tip="Your total cloud bookings target for FY 2027 in thousands of EUR">?</span></label>
+        <div class="inp-wrap">
+          <span class="pfx">k&euro;</span>
+          <input type="number" id="bookingsTarget" value="1500" min="0" step="100" class="has-pfx">
+        </div>
+      </div>
+      <div class="fg">
+        <label>Existing Pipeline (kEUR) <span class="tip" data-tip="Your current qualified pipeline that can contribute to this year's bookings target">?</span></label>
+        <div class="inp-wrap">
+          <span class="pfx">k&euro;</span>
+          <input type="number" id="existingPipeline" value="0" min="0" step="50" class="has-pfx">
+        </div>
+      </div>
+      <div class="fg">
+        <label>Average Deal Size (kEUR) <span class="tip" data-tip="Pipeline Amount Won and Booked this year divided by the number of Opportunities Won and Booked">?</span></label>
+        <div class="hint">Pipeline Won and Booked / Number of Opportunities Won</div>
+        <div class="inp-wrap">
+          <span class="pfx">k&euro;</span>
+          <input type="number" id="avgDeal" value="150" min="1" step="10" class="has-pfx">
+        </div>
+      </div>
+      <div class="fg">
+        <label>Opportunity Conversion Rate (%) <span class="tip" data-tip="Pipeline Won and Booked divided by Total Pipeline Created in the fiscal year. Enter as a percentage, e.g. 23 for 23%.">?</span></label>
+        <div class="hint">Pipeline Won and Booked / Total Pipeline Created</div>
+        <div class="inp-wrap">
+          <input type="number" id="convRate" value="23" min="1" max="100" step="1" class="has-sfx">
+          <span class="sfx">%</span>
+        </div>
+      </div>
+      <div class="fg">
+        <label>MQL to SQL Conversion Rate (%) <span class="tip" data-tip="The rate at which Marketing Qualified Leads convert to Sales Qualified Leads (Opportunities). Enter as a percentage, e.g. 32 for 32%.">?</span></label>
+        <div class="hint">MQLs that convert to Sales Opportunities (SQLs)</div>
+        <div class="inp-wrap">
+          <input type="number" id="mqlRate" value="32" min="1" max="100" step="1" class="has-sfx">
+          <span class="sfx">%</span>
+        </div>
+      </div>
+      <div class="fg">
+        <label>TAM to MQLs Rate (%) <span class="tip" data-tip="The proportion of your Total Addressable Market that can be converted to MQLs. Enter as a percentage, e.g. 5 for 5%.">?</span></label>
+        <div class="hint">Target Accounts that become Marketing Qualified Leads</div>
+        <div class="inp-wrap">
+          <input type="number" id="tamRate" value="5" min="0.1" max="100" step="0.5" class="has-sfx">
+          <span class="sfx">%</span>
+        </div>
+      </div>
+    </div>
+    <div class="btn-center">
+      <button class="btn btn-p" onclick="calculate()">Calculate</button>
+      <button class="btn btn-s" onclick="resetForm()">Reset</button>
+    </div>
+  </div>
+
+  <!-- Section 3: Demand Targets (results) -->
+  <div class="card" id="resultsCard">
+    <div class="card-hd"><div class="card-icon" style="background:var(--green)">2</div> Your Demand Targets</div>
+    <div class="res-grid" id="resGrid"></div>
+  </div>
+
+  <!-- Section 4: Funnel -->
+  <div class="card" id="funnelCard">
+    <div class="card-hd"><div class="card-icon" style="background:var(--indigo)">3</div> Demand Generation Funnel</div>
+    <div id="funnelBox"></div>
+  </div>
+
+  <!-- PDF Export Button (visible only after calculation) -->
+  <div id="pdfBar">
+    <button class="btn btn-g" onclick="exportPDF()">&#128196; Download PDF</button>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<div class="ftr">
+  <div>Partner Ecosystem Success | Partner Business Development | FY 2027</div>
+  <div style="display:flex;gap:10px">
+    <button class="btn btn-s" onclick="window.print()">Print Page</button>
+  </div>
+</div>
+
+<!-- Disclaimer -->
+<div class="disclaimer">
+  This tool is provided for planning purposes only. All calculations are indicative and based on the inputs provided.<br>
+  All data remains in your browser and is not transmitted or stored externally.
+</div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+var calculated = false;
+var lastCalc = {};
+
+// ============================================================
+// CALCULATE
+// ============================================================
+function calculate() {
+  var bt  = num('bookingsTarget');
+  var ep  = num('existingPipeline');
+  var cr  = num('convRate') / 100;
+  var ad  = num('avgDeal');
+  var mr  = num('mqlRate') / 100;
+  var tr  = num('tamRate') / 100;
+
+  if (bt <= 0)  { alert('Please enter a Cloud Bookings Target greater than zero.'); return; }
+  if (ad <= 0)  { alert('Please enter an Average Deal Size greater than zero.'); return; }
+  if (cr <= 0)  { alert('Please enter an Opportunity Conversion Rate greater than zero.'); return; }
+  if (mr <= 0)  { alert('Please enter an MQL to SQL Conversion Rate greater than zero.'); return; }
+  if (tr <= 0)  { alert('Please enter a TAM to MQLs Rate greater than zero.'); return; }
+
+  var bep   = Math.ceil(ep * cr);
+  var rem   = Math.ceil(Math.max(bt - (ep * cr), 0));
+  var vwb   = ad > 0 ? Math.ceil(Math.max(bt - (ep * cr), 0) / ad) : 0;
+  var spt   = cr > 0 ? Math.ceil(Math.max(bt - (ep * cr), 0) / cr) : 0;
+  var sqls  = cr > 0 ? Math.ceil(vwb / cr) : 0;
+  var mqls  = mr > 0 ? Math.ceil(sqls / mr) : 0;
+  var tam   = tr > 0 ? Math.ceil(mqls / tr) : 0;
+
+  lastCalc = {
+    partner: document.getElementById('partnerName').value || 'Not specified',
+    bt: bt, ep: ep, cr: num('convRate'), ad: ad, mr: num('mqlRate'), tr: num('tamRate'),
+    bep: bep, rem: rem, vwb: vwb, spt: spt, sqls: sqls, mqls: mqls, tam: tam
+  };
+
+  renderResults(bep, rem, vwb, spt, sqls, mqls, tam);
+  renderFunnel(tam, mqls, sqls, vwb);
+
+  calculated = true;
+  document.getElementById('resultsCard').classList.remove('results-hidden');
+  document.getElementById('funnelCard').classList.remove('results-hidden');
+  document.getElementById('pdfBar').classList.add('show');
+  document.getElementById('resultsCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ============================================================
+// RENDER RESULTS
+// ============================================================
+function renderResults(bep, rem, vwb, spt, sqls, mqls, tam) {
+  var cards = [
+    { step: 'Intermediate', lbl: 'Bookings from Existing Pipeline',   val: fmt(bep),  unit: 'kEUR',                     cls: ''   },
+    { step: 'Step 1',       lbl: 'Remaining Budget to Retire',        val: fmt(rem),  unit: 'kEUR',                     cls: 'hl' },
+    { step: 'Step 2',       lbl: 'Volume of W/B Required',            val: fmt(vwb),  unit: 'Opportunities',            cls: ''   },
+    { step: 'Step 3',       lbl: 'Sales Pipeline (Demand Target)',     val: fmt(spt),  unit: 'kEUR',                     cls: 'hl' },
+    { step: 'Step 4',       lbl: 'Volume of SQLs Required',           val: fmt(sqls), unit: 'Sales Qualified Leads',    cls: ''   },
+    { step: 'Step 5',       lbl: 'Volume of MQLs Required',           val: fmt(mqls), unit: 'Marketing Qualified Leads', cls: ''   },
+    { step: 'Step 6',       lbl: 'Total Addressable Market (TAM)',     val: fmt(tam),  unit: 'Target Accounts',          cls: 'pri'}
+  ];
+
+  var h = '';
+  cards.forEach(function(c) {
+    h += '<div class="res-card ' + c.cls + '">'
+       + '<div class="res-step">' + c.step + '</div>'
+       + '<div class="res-lbl">' + c.lbl + '</div>'
+       + '<div class="res-val">' + c.val + '</div>'
+       + '<div class="res-unit">' + c.unit + '</div>'
+       + '</div>';
+  });
+  document.getElementById('resGrid').innerHTML = h;
+}
+
+// ============================================================
+// RENDER FUNNEL
+// ============================================================
+function renderFunnel(tam, mqls, sqls, vwb) {
+  var mx = Math.max(tam, 1);
+  var bars = [
+    { lbl: 'TAM (Target Accounts)',    v: tam,  col: '#354A5E' },
+    { lbl: 'MQLs Required',           v: mqls, col: '#6B2ADB' },
+    { lbl: 'SQLs Required',           v: sqls, col: '#0070F2' },
+    { lbl: 'Won / Booked Required',   v: vwb,  col: '#188918' }
+  ];
+
+  var h = '<div class="funnel">';
+  bars.forEach(function(b, i) {
+    var pct = Math.max((b.v / mx) * 100, 8);
+    h += '<div class="fn-row">'
+       + '<div class="fn-lbl">' + b.lbl + '</div>'
+       + '<div class="fn-bar" style="width:' + pct + '%;background:' + b.col + '">' + fmt(b.v) + '</div>'
+       + '</div>';
+    if (i < bars.length - 1) {
+      h += '<div class="fn-arrow">&#9660;</div>';
+    }
+  });
+  h += '</div>';
+  document.getElementById('funnelBox').innerHTML = h;
+}
+
+// ============================================================
+// EXPORT PDF
+// ============================================================
+function exportPDF() {
+  if (!calculated) { alert('Please run the calculation first.'); return; }
+
+  var d = lastCalc;
+  var mx = Math.max(d.tam, 1);
+
+  var funnelBars = [
+    { lbl: 'TAM (Target Accounts)',  v: d.tam,  col: '#354A5E' },
+    { lbl: 'MQLs Required',         v: d.mqls, col: '#6B2ADB' },
+    { lbl: 'SQLs Required',         v: d.sqls, col: '#0070F2' },
+    { lbl: 'Won / Booked Required', v: d.vwb,  col: '#188918' }
+  ];
+
+  var funnelHTML = '';
+  funnelBars.forEach(function(b, i) {
+    var pct = Math.max((b.v / mx) * 100, 10);
+    funnelHTML += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">'
+      + '<div style="font-size:14px;color:#6A7278;min-width:190px;text-align:right">' + b.lbl + '</div>'
+      + '<div style="height:38px;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:600;padding:0 14px;background:' + b.col + ';width:' + pct + '%;min-width:70px">' + fmt(b.v) + '</div>'
+      + '</div>';
+    if (i < funnelBars.length - 1) {
+      funnelHTML += '<div style="text-align:center;color:#6A7278;font-size:15px;margin-bottom:4px;padding-left:190px">&#9660;</div>';
+    }
+  });
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
+    + '<title>Demand Calculator Results - ' + esc(d.partner) + '</title>'
+    + '<style>'
+    + '*{box-sizing:border-box;margin:0;padding:0}'
+    + 'body{font-family:"Segoe UI",Arial,Helvetica,sans-serif;color:#32363A;padding:0;margin:0}'
+    + '.page{max-width:800px;margin:0 auto;padding:40px 36px}'
+    + '.hdr{background:#1D2D3E;padding:22px 36px;display:flex;align-items:center;justify-content:space-between}'
+    + '.hdr-t{color:#fff;font-size:20px;font-weight:700;letter-spacing:.3px}'
+    + '.hdr-sub{color:rgba(255,255,255,.5);font-size:14px;font-weight:400;margin-left:6px}'
+    + '.hdr-badge{color:rgba(255,255,255,.7);font-size:14px}'
+    + '.sec{margin-bottom:28px;break-inside:avoid;page-break-inside:avoid}'
+    + '.sec-title{font-size:16px;font-weight:600;color:#1D2D3E;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid #0070F2}'
+    + 'table{width:100%;border-collapse:collapse;font-size:15px}'
+    + 'th{text-align:left;padding:10px 14px;background:#F4F6F9;font-weight:600;border-bottom:1px solid #D9D9D9}'
+    + 'td{padding:10px 14px;border-bottom:1px solid #EAEAEA}'
+    + '.res-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}'
+    + '.rc{border:1px solid #D9D9D9;border-radius:6px;padding:14px 16px;break-inside:avoid;page-break-inside:avoid}'
+    + '.rc.hl{background:#EBF4FF;border-color:#0070F2}'
+    + '.rc.pri{background:linear-gradient(135deg,#0070F2,#005DC7);color:#fff}'
+    + '.rc .step{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#6A7278;margin-bottom:3px}'
+    + '.rc.pri .step{color:rgba(255,255,255,.6)}'
+    + '.rc .lbl{font-size:13px;font-weight:500;margin-bottom:6px;line-height:1.3}'
+    + '.rc.pri .lbl{color:rgba(255,255,255,.85)}'
+    + '.rc .val{font-size:24px;font-weight:700;color:#0070F2}'
+    + '.rc.pri .val{color:#fff}'
+    + '.rc .unit{font-size:12px;color:#6A7278;margin-top:3px}'
+    + '.rc.pri .unit{color:rgba(255,255,255,.55)}'
+    + '.ftr{margin-top:34px;padding-top:14px;border-top:1px solid #D9D9D9;font-size:12px;color:#6A7278;text-align:center;break-inside:avoid;page-break-inside:avoid}'
+    + '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.page{padding:20px 24px}.sec{break-inside:avoid;page-break-inside:avoid}}'
+    + '</style></head><body>'
+    + '<div class="hdr"><div><span class="hdr-t">Partner Demand Calculator</span><span class="hdr-sub">Indirect Demand Management</span></div><span class="hdr-badge">FY 2027</span></div>'
+    + '<div class="page">'
+
+    // Partner Info
+    + '<div class="sec">'
+    + '<div class="sec-title">Partner Information</div>'
+    + '<table><tr><th style="width:50%">Partner Name</th><th>Fiscal Year</th></tr>'
+    + '<tr><td>' + esc(d.partner) + '</td><td>FY 2027</td></tr></table>'
+    + '</div>'
+
+    // Input Summary
+    + '<div class="sec">'
+    + '<div class="sec-title">Input Parameters</div>'
+    + '<table>'
+    + '<tr><th>Parameter</th><th>Value</th></tr>'
+    + '<tr><td>2027 Cloud Bookings Target</td><td>' + fmt(d.bt) + ' kEUR</td></tr>'
+    + '<tr><td>Existing Pipeline</td><td>' + fmt(d.ep) + ' kEUR</td></tr>'
+    + '<tr><td>Average Deal Size</td><td>' + fmt(d.ad) + ' kEUR</td></tr>'
+    + '<tr><td>Opportunity Conversion Rate</td><td>' + d.cr + '%</td></tr>'
+    + '<tr><td>MQL to SQL Conversion Rate</td><td>' + d.mr + '%</td></tr>'
+    + '<tr><td>TAM to MQLs Rate</td><td>' + d.tr + '%</td></tr>'
+    + '</table>'
+    + '</div>'
+
+    // Results
+    + '<div class="sec">'
+    + '<div class="sec-title">Demand Targets</div>'
+    + '<div class="res-grid">'
+    + rc('Intermediate', 'Bookings from Existing Pipeline', fmt(d.bep), 'kEUR', '')
+    + rc('Step 1', 'Remaining Budget to Retire', fmt(d.rem), 'kEUR', 'hl')
+    + rc('Step 2', 'Volume of W/B Required', fmt(d.vwb), 'Opportunities', '')
+    + rc('Step 3', 'Sales Pipeline (Demand Target)', fmt(d.spt), 'kEUR', 'hl')
+    + rc('Step 4', 'Volume of SQLs Required', fmt(d.sqls), 'Sales Qualified Leads', '')
+    + rc('Step 5', 'Volume of MQLs Required', fmt(d.mqls), 'Marketing Qualified Leads', '')
+    + rc('Step 6', 'Total Addressable Market (TAM)', fmt(d.tam), 'Target Accounts', 'pri')
+    + '</div>'
+    + '</div>'
+
+    // Funnel
+    + '<div class="sec">'
+    + '<div class="sec-title">Demand Generation Funnel</div>'
+    + '<div style="display:flex;flex-direction:column;align-items:center;padding:8px 0">'
+    + funnelHTML
+    + '</div>'
+    + '</div>'
+
+    // Footer
+    + '<div class="ftr">Partner Ecosystem Success | Partner Business Development | FY 2027 | Generated ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + '<br>This tool is provided for planning purposes only. All calculations are indicative and based on the inputs provided.</div>'
+
+    + '</div></body></html>';
+
+  var win = window.open('', '_blank');
+  if (!win) {
+    alert('Your browser blocked the popup. Please allow popups for this page and try again.');
+    return;
+  }
+  win.document.write(html);
+  win.document.close();
+  win.onload = function() { win.print(); };
+  setTimeout(function() { if (win && !win.closed) { win.print(); } }, 600);
+}
+
+// Helper: result card for PDF
+function rc(step, lbl, val, unit, cls) {
+  return '<div class="rc ' + cls + '">'
+    + '<div class="step">' + step + '</div>'
+    + '<div class="lbl">' + lbl + '</div>'
+    + '<div class="val">' + val + '</div>'
+    + '<div class="unit">' + unit + '</div>'
+    + '</div>';
+}
+
+// ============================================================
+// RESET
+// ============================================================
+function resetForm() {
+  document.getElementById('partnerName').value = '';
+  document.getElementById('bookingsTarget').value = 1500;
+  document.getElementById('existingPipeline').value = 0;
+  document.getElementById('avgDeal').value = 150;
+  document.getElementById('convRate').value = 23;
+  document.getElementById('mqlRate').value = 32;
+  document.getElementById('tamRate').value = 5;
+
+  document.getElementById('resGrid').innerHTML = '';
+  document.getElementById('funnelBox').innerHTML = '';
+
+  calculated = false;
+  lastCalc = {};
+  document.getElementById('resultsCard').classList.add('results-hidden');
+  document.getElementById('funnelCard').classList.add('results-hidden');
+  document.getElementById('pdfBar').classList.remove('show');
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function num(id) { return parseFloat(document.getElementById(id).value) || 0; }
+function fmt(v) { return Number.isFinite(v) ? Math.ceil(v).toLocaleString('en-US', { maximumFractionDigits: 0 }) : '0'; }
+function esc(s) { var el = document.createElement('span'); el.textContent = s; return el.innerHTML; }
+
+// ============================================================
+// INIT
+// ============================================================
+document.getElementById('resultsCard').classList.add('results-hidden');
+document.getElementById('funnelCard').classList.add('results-hidden');
+</script>
+</body>
+</html>
