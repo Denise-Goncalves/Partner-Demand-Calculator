@@ -1,60 +1,41 @@
-# Partner Demand Calculator - FY 2027
+# Partner Demand Calculator
 
-An interactive demand planning tool for partners to calculate the required demand generation activity to meet their FY 2027 cloud bookings targets.
-
-## What It Does
-
-Partners enter six inputs and the calculator derives the full demand funnel:
-
-| Input | Description |
-|-------|-------------|
-| Cloud Bookings Target (kEUR) | Total bookings target for FY 2027 |
-| Existing Pipeline (kEUR) | Qualified pipeline already in place |
-| Average Deal Size (kEUR) | Won and Booked pipeline / Number of opportunities won |
-| Opportunity Conversion Rate (%) | Pipeline Won and Booked / Total Pipeline Created |
-| MQL to SQL Conversion Rate (%) | Marketing Leads that convert to Sales Opportunities |
-| TAM to MQLs Rate (%) | Target Accounts that become Marketing Qualified Leads |
-
-**Outputs (all rounded up, no decimals):**
-- Bookings from Existing Pipeline
-- Remaining Budget to Retire
-- Volume of Won/Booked Required
-- Sales Pipeline (Demand Target)
-- Volume of SQLs Required
-- Volume of MQLs Required
-- Total Addressable Market (TAM)
+Interactive demand generation calculator for partners. Determines the required pipeline volume, SQL/MQL targets, Total Addressable Market (TAM), and Total Number of Accounts to meet cloud bookings targets.
 
 ## Features
 
-- Single self-contained HTML file with no external dependencies
-- Runs entirely in the browser with no data transmitted externally
-- Real-time demand funnel visualization
-- PDF export with section-level page-break protection
-- Responsive design (desktop, tablet, mobile)
-- Print-friendly layout
+- 8-step demand calculation from Bookings Target through to Total Number of Accounts
+- Percentage-based conversion rate inputs with industry benchmarks and contextual tooltips
+- Conversion rate annotations on every result card
+- Graphical demand funnel with proportional tapering and conversion rate labels
+- PDF export with full annotations, graphical funnel, and page-break protection
+- Generic fiscal year support (not locked to a specific year)
+- Self-contained HTML file with no external dependencies
+- Runs entirely in the browser -- no data is transmitted or stored externally
 
-## How to Use
+## Usage
 
 1. Open `index.html` in any modern browser (Chrome, Edge, Firefox, Safari)
-2. Enter your partner name and input parameters
-3. Click **Calculate** to see results and the demand funnel
-4. Click **Download PDF** to save a clean report
-
-## Deployment
-
-This repository is configured for [GitHub Pages](https://pages.github.com/). The calculator is published at:
-
-```
-https://<your-username>.github.io/demand-calculator/
-```
+2. Enter your Partner Name and Fiscal Year
+3. Fill in your bookings target, pipeline, deal size, and conversion rates
+4. Click **Calculate** to see your demand targets and funnel
+5. Click **Download PDF** to export a results summary
 
 ## Privacy
 
 All calculations run locally in the browser. No data is collected, transmitted, or stored on any server.
 
+## Deployment
+
+This repository is configured for GitHub Pages. The calculator is published at:
+
+```
+https://<your-username>.github.io/demand-calculator/
+```
+
 ## Contact
 
-Partner Ecosystem Success | Partner Business Development
+Global Partner Business Development Team
 
 ---
 

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Partner Demand Calculator - FY 2027</title>
+<title>Partner Demand Calculator</title>
 <style>
 :root{--blue:#0070F2;--dark:#1D2D3E;--gold:#E8A000;--bg:#F4F6F9;--card:#FFF;--border:#D9D9D9;--text:#32363A;--muted:#6A7278;--green:#188918;--indigo:#6B2ADB}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -52,13 +52,15 @@ input:disabled{background:#F5F5F5;color:#888}
 .res-card.pri .res-val{color:#fff}
 .res-unit{font-size:13px;color:var(--muted);margin-top:3px}
 .res-card.pri .res-unit{color:rgba(255,255,255,.6)}
+.res-rate{font-size:11px;color:var(--blue);font-weight:600;margin-top:5px;font-style:italic}
+.res-card.pri .res-rate{color:rgba(255,255,255,.7)}
 
 /* Funnel */
-.funnel{display:flex;flex-direction:column;align-items:center;gap:0;padding:10px 0}
-.fn-row{display:flex;align-items:center;gap:12px;width:100%;max-width:700px;margin-bottom:6px}
-.fn-bar{height:40px;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:600;transition:width .5s ease;min-width:70px;white-space:nowrap;padding:0 14px}
-.fn-lbl{font-size:14px;color:var(--muted);min-width:180px;text-align:right}
-.fn-arrow{text-align:center;color:var(--muted);font-size:15px;width:100%;max-width:700px;margin-bottom:2px}
+.funnel{display:flex;flex-direction:column;align-items:center;gap:0;padding:16px 0;width:100%;max-width:620px;margin:0 auto}
+.fn-seg{width:100%;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;position:relative}
+.fn-seg-lbl{font-size:12px;font-weight:500;opacity:.9;letter-spacing:.2px}
+.fn-seg-val{font-size:17px;font-weight:700}
+.fn-rate{color:var(--blue);font-size:12px;font-weight:600;font-style:italic;padding:4px 0;text-align:center}
 
 /* Button */
 .btn{display:inline-flex;align-items:center;gap:5px;padding:10px 28px;border-radius:4px;font-size:16px;font-weight:600;cursor:pointer;border:none;transition:.15s;font-family:inherit}
@@ -72,7 +74,7 @@ input:disabled{background:#F5F5F5;color:#888}
 
 /* Tooltip */
 .tip{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;background:var(--muted);color:#fff;border-radius:50%;font-size:11px;font-weight:700;cursor:help;margin-left:3px;position:relative}
-.tip:hover::after{content:attr(data-tip);position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:var(--dark);color:#fff;font-size:13px;font-weight:400;padding:6px 10px;border-radius:4px;z-index:99;max-width:300px;white-space:normal;line-height:1.3;width:max-content}
+#tipBox{display:none;position:absolute;background:var(--dark);color:#fff;font-size:13px;font-weight:400;padding:12px 16px;border-radius:4px;z-index:999;max-width:420px;line-height:1.7;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,.25)}
 
 /* Footer */
 .ftr{background:var(--dark);color:rgba(255,255,255,.55);padding:16px 32px;font-size:13px;margin-top:30px;display:flex;align-items:center;justify-content:space-between}
@@ -102,16 +104,15 @@ input:disabled{background:#F5F5F5;color:#888}
 <div class="hdr">
   <div class="hdr-logo">
     <span class="hdr-mark">Partner Demand Calculator</span>
-    <span class="hdr-sub">Indirect Demand Management</span>
+    <span class="hdr-sub">Global Partner Business Development Team</span>
   </div>
-  <div class="hdr-badge">FY 2027</div>
 </div>
 
 <div class="wrap">
 
   <!-- Instructions -->
   <div class="info">
-    Use this calculator to determine the demand generation activity required to meet your FY 2027 cloud bookings target. Fill in your inputs below, then press <strong>Calculate</strong> to see your full demand funnel: from required pipeline volume through to your Total Addressable Market (TAM).
+    Use this calculator to determine the demand generation activity required to meet your cloud bookings target. Fill in your inputs below, then press <strong>Calculate</strong> to see your full demand funnel: from required pipeline volume through to your Total Addressable Market (TAM).
   </div>
 
   <!-- Section 1: Partner Information -->
@@ -124,7 +125,7 @@ input:disabled{background:#F5F5F5;color:#888}
       </div>
       <div class="fg">
         <label>Fiscal Year</label>
-        <input type="text" value="FY 2027" disabled>
+        <input type="text" id="fiscalYear" value="" placeholder="e.g. 2027">
       </div>
     </div>
   </div>
@@ -134,21 +135,21 @@ input:disabled{background:#F5F5F5;color:#888}
     <div class="card-hd"><div class="card-icon">1</div> Your Inputs</div>
     <div class="grid3">
       <div class="fg">
-        <label>2027 Cloud Bookings Target (kEUR) <span class="tip" data-tip="Your total cloud bookings target for FY 2027 in thousands of EUR">?</span></label>
+        <label>Cloud Bookings Target (kEUR) <span class="tip" data-tip="Your total cloud bookings target for Fiscal Year as included in your Partner Business Planning - in thousands of EUR">?</span></label>
         <div class="inp-wrap">
           <span class="pfx">k&euro;</span>
           <input type="number" id="bookingsTarget" value="1500" min="0" step="100" class="has-pfx">
         </div>
       </div>
       <div class="fg">
-        <label>Existing Pipeline (kEUR) <span class="tip" data-tip="Your current qualified pipeline that can contribute to this year's bookings target">?</span></label>
+        <label>Existing Pipeline (kEUR) <span class="tip" data-tip="Your current existing qualified pipeline that can contribute to Fiscal Year booking targets">?</span></label>
         <div class="inp-wrap">
           <span class="pfx">k&euro;</span>
           <input type="number" id="existingPipeline" value="0" min="0" step="50" class="has-pfx">
         </div>
       </div>
       <div class="fg">
-        <label>Average Deal Size (kEUR) <span class="tip" data-tip="Pipeline Amount Won and Booked this year divided by the number of Opportunities Won and Booked">?</span></label>
+        <label>Average Deal Size (kEUR) <span class="tip" data-tip="Pipeline Amount Won and Booked this current year divided by the number of Opportunities Won and Booked">?</span></label>
         <div class="hint">Pipeline Won and Booked / Number of Opportunities Won</div>
         <div class="inp-wrap">
           <span class="pfx">k&euro;</span>
@@ -156,7 +157,7 @@ input:disabled{background:#F5F5F5;color:#888}
         </div>
       </div>
       <div class="fg">
-        <label>Opportunity Conversion Rate (%) <span class="tip" data-tip="Pipeline Won and Booked divided by Total Pipeline Created in the fiscal year. Enter as a percentage, e.g. 23 for 23%.">?</span></label>
+        <label>Opportunity Conversion Rate (%) <span class="tip" data-tip="Pipeline Won and Booked divided by Total Pipeline Created in the current fiscal year.|Industry benchmark is 25%.|Enter as a percentage, e.g. 25 for 25%.">?</span></label>
         <div class="hint">Pipeline Won and Booked / Total Pipeline Created</div>
         <div class="inp-wrap">
           <input type="number" id="convRate" value="23" min="1" max="100" step="1" class="has-sfx">
@@ -164,7 +165,7 @@ input:disabled{background:#F5F5F5;color:#888}
         </div>
       </div>
       <div class="fg">
-        <label>MQL to SQL Conversion Rate (%) <span class="tip" data-tip="The rate at which Marketing Qualified Leads convert to Sales Qualified Leads (Opportunities). Enter as a percentage, e.g. 32 for 32%.">?</span></label>
+        <label>MQL to SQL Conversion Rate (%) <span class="tip" data-tip="MQL (Marketing Qualified Lead): Potential customers who have shown enough interest, they are considered more likely to become a customer than other leads.|SQL (Sales Qualified Lead): Leads that have been vetted by both marketing and sales teams and are ready for the next stage in the sales process (= Opportunity).|Recommended industry benchmark conversion is 32% with an average of 15 touchpoints per persona.|Enter as a percentage, e.g. 32 for 32%.">?</span></label>
         <div class="hint">MQLs that convert to Sales Opportunities (SQLs)</div>
         <div class="inp-wrap">
           <input type="number" id="mqlRate" value="32" min="1" max="100" step="1" class="has-sfx">
@@ -172,7 +173,7 @@ input:disabled{background:#F5F5F5;color:#888}
         </div>
       </div>
       <div class="fg">
-        <label>TAM to MQLs Rate (%) <span class="tip" data-tip="The proportion of your Total Addressable Market that can be converted to MQLs. Enter as a percentage, e.g. 5 for 5%.">?</span></label>
+        <label>TAM to MQLs Rate (%) <span class="tip" data-tip="TAM (Total Addressable Market): Total number of potential contacts in your total number of addressable accounts.|MQL (Marketing Qualified Lead): Potential customers who have shown enough interest, they are considered more likely to become a customer than other leads.|Industry benchmark conversion is 5% considering a multichannel Demand Generation approach leveraging digital tools and targeting multiple personas at different levels (avg 10 personas per account).|Enter as a percentage, e.g. 5 for 5%.">?</span></label>
         <div class="hint">Target Accounts that become Marketing Qualified Leads</div>
         <div class="inp-wrap">
           <input type="number" id="tamRate" value="5" min="0.1" max="100" step="0.5" class="has-sfx">
@@ -205,13 +206,7 @@ input:disabled{background:#F5F5F5;color:#888}
 
 </div>
 
-<!-- Footer -->
-<div class="ftr">
-  <div>Partner Ecosystem Success | Partner Business Development | FY 2027</div>
-  <div style="display:flex;gap:10px">
-    <button class="btn btn-s" onclick="window.print()">Print Page</button>
-  </div>
-</div>
+
 
 <!-- Disclaimer -->
 <div class="disclaimer">
@@ -250,15 +245,17 @@ function calculate() {
   var sqls  = cr > 0 ? Math.ceil(vwb / cr) : 0;
   var mqls  = mr > 0 ? Math.ceil(sqls / mr) : 0;
   var tam   = tr > 0 ? Math.ceil(mqls / tr) : 0;
+  var accts = Math.ceil(tam / 10);
 
   lastCalc = {
     partner: document.getElementById('partnerName').value || 'Not specified',
+    fy: document.getElementById('fiscalYear').value || 'Not specified',
     bt: bt, ep: ep, cr: num('convRate'), ad: ad, mr: num('mqlRate'), tr: num('tamRate'),
-    bep: bep, rem: rem, vwb: vwb, spt: spt, sqls: sqls, mqls: mqls, tam: tam
+    bep: bep, rem: rem, vwb: vwb, spt: spt, sqls: sqls, mqls: mqls, tam: tam, accts: accts
   };
 
-  renderResults(bep, rem, vwb, spt, sqls, mqls, tam);
-  renderFunnel(tam, mqls, sqls, vwb);
+  renderResults(bep, rem, vwb, spt, sqls, mqls, tam, accts, num('convRate'), num('mqlRate'), num('tamRate'), ad);
+  renderFunnel(tam, accts, mqls, sqls, vwb, num('convRate'), num('mqlRate'), num('tamRate'));
 
   calculated = true;
   document.getElementById('resultsCard').classList.remove('results-hidden');
@@ -270,15 +267,16 @@ function calculate() {
 // ============================================================
 // RENDER RESULTS
 // ============================================================
-function renderResults(bep, rem, vwb, spt, sqls, mqls, tam) {
+function renderResults(bep, rem, vwb, spt, sqls, mqls, tam, accts, crPct, mrPct, trPct, ad) {
   var cards = [
-    { step: 'Intermediate', lbl: 'Bookings from Existing Pipeline',   val: fmt(bep),  unit: 'kEUR',                     cls: ''   },
-    { step: 'Step 1',       lbl: 'Remaining Budget to Retire',        val: fmt(rem),  unit: 'kEUR',                     cls: 'hl' },
-    { step: 'Step 2',       lbl: 'Volume of W/B Required',            val: fmt(vwb),  unit: 'Opportunities',            cls: ''   },
-    { step: 'Step 3',       lbl: 'Sales Pipeline (Demand Target)',     val: fmt(spt),  unit: 'kEUR',                     cls: 'hl' },
-    { step: 'Step 4',       lbl: 'Volume of SQLs Required',           val: fmt(sqls), unit: 'Sales Qualified Leads',    cls: ''   },
-    { step: 'Step 5',       lbl: 'Volume of MQLs Required',           val: fmt(mqls), unit: 'Marketing Qualified Leads', cls: ''   },
-    { step: 'Step 6',       lbl: 'Total Addressable Market (TAM)',     val: fmt(tam),  unit: 'Target Accounts',          cls: 'pri'}
+    { step: 'Intermediate', lbl: 'Bookings from Existing Pipeline',   val: fmt(bep),   unit: 'kEUR',                     cls: '',    rate: 'at ' + crPct + '% conversion rate' },
+    { step: 'Step 1',       lbl: 'Remaining Budget to Retire',        val: fmt(rem),   unit: 'kEUR',                     cls: 'hl',  rate: '' },
+    { step: 'Step 2',       lbl: 'Volume of W/B Required',            val: fmt(vwb),   unit: 'Opportunities',            cls: '',    rate: 'at ' + fmt(ad) + ' kEUR avg deal size' },
+    { step: 'Step 3',       lbl: 'Sales Pipeline (Demand Target)',     val: fmt(spt),   unit: 'kEUR',                     cls: 'hl',  rate: 'at ' + crPct + '% conversion rate' },
+    { step: 'Step 4',       lbl: 'Volume of SQLs Required',           val: fmt(sqls),  unit: 'Sales Qualified Leads',    cls: '',    rate: 'at ' + crPct + '% conversion rate' },
+    { step: 'Step 5',       lbl: 'Volume of MQLs Required',           val: fmt(mqls),  unit: 'Marketing Qualified Leads', cls: '',    rate: 'at ' + mrPct + '% MQL to SQL rate' },
+    { step: 'Step 6',       lbl: 'Total Addressable Market (TAM)',     val: fmt(tam),   unit: 'Target Contacts',          cls: 'pri', rate: 'at ' + trPct + '% TAM to MQL rate' },
+    { step: 'Step 7',       lbl: 'Total Number of Accounts',          val: fmt(accts), unit: 'Accounts',                 cls: 'pri', rate: 'estimating avg 10 people reach per account' }
   ];
 
   var h = '';
@@ -288,6 +286,7 @@ function renderResults(bep, rem, vwb, spt, sqls, mqls, tam) {
        + '<div class="res-lbl">' + c.lbl + '</div>'
        + '<div class="res-val">' + c.val + '</div>'
        + '<div class="res-unit">' + c.unit + '</div>'
+       + (c.rate ? '<div class="res-rate">' + c.rate + '</div>' : '')
        + '</div>';
   });
   document.getElementById('resGrid').innerHTML = h;
@@ -296,24 +295,38 @@ function renderResults(bep, rem, vwb, spt, sqls, mqls, tam) {
 // ============================================================
 // RENDER FUNNEL
 // ============================================================
-function renderFunnel(tam, mqls, sqls, vwb) {
-  var mx = Math.max(tam, 1);
+function renderFunnel(tam, accts, mqls, sqls, vwb, crPct, mrPct, trPct) {
+  var vals = [tam, accts, mqls, sqls, vwb];
+  var mx = Math.max.apply(null, vals) || 1;
+  var widths = vals.map(function(v) { return Math.max(Math.pow(v / mx, 0.4) * 100, 14); });
+
   var bars = [
-    { lbl: 'TAM (Target Accounts)',    v: tam,  col: '#354A5E' },
-    { lbl: 'MQLs Required',           v: mqls, col: '#6B2ADB' },
-    { lbl: 'SQLs Required',           v: sqls, col: '#0070F2' },
-    { lbl: 'Won / Booked Required',   v: vwb,  col: '#188918' }
+    { lbl: 'TAM (Target Contacts)',        v: tam,   col: '#354A5E' },
+    { lbl: 'Total Number of Accounts',     v: accts, col: '#5A6F7E' },
+    { lbl: 'MQLs Required',               v: mqls,  col: '#6B2ADB' },
+    { lbl: 'SQLs Required',               v: sqls,  col: '#0070F2' },
+    { lbl: 'Won / Booked',       v: vwb,   col: '#188918' }
+  ];
+  var rates = [
+    'estimating avg 10 people reach per account',
+    'at ' + trPct + '% TAM to MQL rate',
+    'at ' + mrPct + '% MQL to SQL rate',
+    'at ' + crPct + '% conversion rate'
   ];
 
   var h = '<div class="funnel">';
   bars.forEach(function(b, i) {
-    var pct = Math.max((b.v / mx) * 100, 8);
-    h += '<div class="fn-row">'
-       + '<div class="fn-lbl">' + b.lbl + '</div>'
-       + '<div class="fn-bar" style="width:' + pct + '%;background:' + b.col + '">' + fmt(b.v) + '</div>'
+    var topW = widths[i];
+    var botW = (i < bars.length - 1) ? widths[i + 1] : topW * 0.85;
+    var tI = (100 - topW) / 2;
+    var bI = (100 - botW) / 2;
+    h += '<div class="fn-seg" style="background:' + b.col
+       + ';clip-path:polygon(' + tI + '% 0,' + (100 - tI) + '% 0,' + (100 - bI) + '% 100%,' + bI + '% 100%)">'
+       + '<div class="fn-seg-lbl">' + b.lbl + '</div>'
+       + '<div class="fn-seg-val">' + fmt(b.v) + '</div>'
        + '</div>';
     if (i < bars.length - 1) {
-      h += '<div class="fn-arrow">&#9660;</div>';
+      h += '<div class="fn-rate">' + rates[i] + '</div>';
     }
   });
   h += '</div>';
@@ -330,21 +343,35 @@ function exportPDF() {
   var mx = Math.max(d.tam, 1);
 
   var funnelBars = [
-    { lbl: 'TAM (Target Accounts)',  v: d.tam,  col: '#354A5E' },
-    { lbl: 'MQLs Required',         v: d.mqls, col: '#6B2ADB' },
-    { lbl: 'SQLs Required',         v: d.sqls, col: '#0070F2' },
-    { lbl: 'Won / Booked Required', v: d.vwb,  col: '#188918' }
+    { lbl: 'TAM (Target Contacts)',       v: d.tam,   col: '#354A5E' },
+    { lbl: 'Total Number of Accounts',    v: d.accts, col: '#5A6F7E' },
+    { lbl: 'MQLs Required',              v: d.mqls,  col: '#6B2ADB' },
+    { lbl: 'SQLs Required',              v: d.sqls,  col: '#0070F2' },
+    { lbl: 'Won / Booked',      v: d.vwb,   col: '#188918' }
   ];
+  var funnelRates = [
+    'estimating avg 10 people reach per account',
+    'at ' + d.tr + '% TAM to MQL rate',
+    'at ' + d.mr + '% MQL to SQL rate',
+    'at ' + d.cr + '% conversion rate'
+  ];
+
+  var fVals = [d.tam, d.accts, d.mqls, d.sqls, d.vwb];
+  var fWidths = fVals.map(function(v) { return Math.max(Math.pow(v / mx, 0.4) * 100, 14); });
 
   var funnelHTML = '';
   funnelBars.forEach(function(b, i) {
-    var pct = Math.max((b.v / mx) * 100, 10);
-    funnelHTML += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">'
-      + '<div style="font-size:14px;color:#6A7278;min-width:190px;text-align:right">' + b.lbl + '</div>'
-      + '<div style="height:38px;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:600;padding:0 14px;background:' + b.col + ';width:' + pct + '%;min-width:70px">' + fmt(b.v) + '</div>'
+    var topW = fWidths[i];
+    var botW = (i < funnelBars.length - 1) ? fWidths[i + 1] : topW * 0.85;
+    var tI = (100 - topW) / 2;
+    var bI = (100 - botW) / 2;
+    funnelHTML += '<div style="width:100%;height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;background:' + b.col
+      + ';clip-path:polygon(' + tI + '% 0,' + (100 - tI) + '% 0,' + (100 - bI) + '% 100%,' + bI + '% 100%);-webkit-clip-path:polygon(' + tI + '% 0,' + (100 - tI) + '% 0,' + (100 - bI) + '% 100%,' + bI + '% 100%)">'
+      + '<div style="font-size:11px;font-weight:500;opacity:.9">' + b.lbl + '</div>'
+      + '<div style="font-size:16px;font-weight:700">' + fmt(b.v) + '</div>'
       + '</div>';
     if (i < funnelBars.length - 1) {
-      funnelHTML += '<div style="text-align:center;color:#6A7278;font-size:15px;margin-bottom:4px;padding-left:190px">&#9660;</div>';
+      funnelHTML += '<div style="color:#0070F2;font-size:12px;font-weight:600;font-style:italic;padding:4px 0;text-align:center">' + funnelRates[i] + '</div>';
     }
   });
 
@@ -375,17 +402,19 @@ function exportPDF() {
     + '.rc.pri .val{color:#fff}'
     + '.rc .unit{font-size:12px;color:#6A7278;margin-top:3px}'
     + '.rc.pri .unit{color:rgba(255,255,255,.55)}'
+    + '.rc .rate{font-size:10px;color:#0070F2;font-weight:600;font-style:italic;margin-top:4px}'
+    + '.rc.pri .rate{color:rgba(255,255,255,.7)}'
     + '.ftr{margin-top:34px;padding-top:14px;border-top:1px solid #D9D9D9;font-size:12px;color:#6A7278;text-align:center;break-inside:avoid;page-break-inside:avoid}'
     + '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.page{padding:20px 24px}.sec{break-inside:avoid;page-break-inside:avoid}}'
     + '</style></head><body>'
-    + '<div class="hdr"><div><span class="hdr-t">Partner Demand Calculator</span><span class="hdr-sub">Indirect Demand Management</span></div><span class="hdr-badge">FY 2027</span></div>'
+    + '<div class="hdr"><div><span class="hdr-t">Partner Demand Calculator</span><span class="hdr-sub">Global Partner Business Development Team</span></div><span class="hdr-badge">FY ' + esc(d.fy) + '</span></div>'
     + '<div class="page">'
 
     // Partner Info
     + '<div class="sec">'
     + '<div class="sec-title">Partner Information</div>'
     + '<table><tr><th style="width:50%">Partner Name</th><th>Fiscal Year</th></tr>'
-    + '<tr><td>' + esc(d.partner) + '</td><td>FY 2027</td></tr></table>'
+    + '<tr><td>' + esc(d.partner) + '</td><td>FY ' + esc(d.fy) + '</td></tr></table>'
     + '</div>'
 
     // Input Summary
@@ -393,7 +422,7 @@ function exportPDF() {
     + '<div class="sec-title">Input Parameters</div>'
     + '<table>'
     + '<tr><th>Parameter</th><th>Value</th></tr>'
-    + '<tr><td>2027 Cloud Bookings Target</td><td>' + fmt(d.bt) + ' kEUR</td></tr>'
+    + '<tr><td>Cloud Bookings Target</td><td>' + fmt(d.bt) + ' kEUR</td></tr>'
     + '<tr><td>Existing Pipeline</td><td>' + fmt(d.ep) + ' kEUR</td></tr>'
     + '<tr><td>Average Deal Size</td><td>' + fmt(d.ad) + ' kEUR</td></tr>'
     + '<tr><td>Opportunity Conversion Rate</td><td>' + d.cr + '%</td></tr>'
@@ -406,13 +435,14 @@ function exportPDF() {
     + '<div class="sec">'
     + '<div class="sec-title">Demand Targets</div>'
     + '<div class="res-grid">'
-    + rc('Intermediate', 'Bookings from Existing Pipeline', fmt(d.bep), 'kEUR', '')
-    + rc('Step 1', 'Remaining Budget to Retire', fmt(d.rem), 'kEUR', 'hl')
-    + rc('Step 2', 'Volume of W/B Required', fmt(d.vwb), 'Opportunities', '')
-    + rc('Step 3', 'Sales Pipeline (Demand Target)', fmt(d.spt), 'kEUR', 'hl')
-    + rc('Step 4', 'Volume of SQLs Required', fmt(d.sqls), 'Sales Qualified Leads', '')
-    + rc('Step 5', 'Volume of MQLs Required', fmt(d.mqls), 'Marketing Qualified Leads', '')
-    + rc('Step 6', 'Total Addressable Market (TAM)', fmt(d.tam), 'Target Accounts', 'pri')
+    + rc('Intermediate', 'Bookings from Existing Pipeline', fmt(d.bep), 'kEUR', '', 'at ' + d.cr + '% conversion rate')
+    + rc('Step 1', 'Remaining Budget to Retire', fmt(d.rem), 'kEUR', 'hl', '')
+    + rc('Step 2', 'Volume of W/B Required', fmt(d.vwb), 'Opportunities', '', 'at ' + fmt(d.ad) + ' kEUR avg deal size')
+    + rc('Step 3', 'Sales Pipeline (Demand Target)', fmt(d.spt), 'kEUR', 'hl', 'at ' + d.cr + '% conversion rate')
+    + rc('Step 4', 'Volume of SQLs Required', fmt(d.sqls), 'Sales Qualified Leads', '', 'at ' + d.cr + '% conversion rate')
+    + rc('Step 5', 'Volume of MQLs Required', fmt(d.mqls), 'Marketing Qualified Leads', '', 'at ' + d.mr + '% MQL to SQL rate')
+    + rc('Step 6', 'Total Addressable Market (TAM)', fmt(d.tam), 'Target Contacts', 'pri', 'at ' + d.tr + '% TAM to MQL rate')
+    + rc('Step 7', 'Total Number of Accounts', fmt(d.accts), 'Accounts', 'pri', 'estimating avg 10 people reach per account')
     + '</div>'
     + '</div>'
 
@@ -425,7 +455,7 @@ function exportPDF() {
     + '</div>'
 
     // Footer
-    + '<div class="ftr">Partner Ecosystem Success | Partner Business Development | FY 2027 | Generated ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + '<br>This tool is provided for planning purposes only. All calculations are indicative and based on the inputs provided.</div>'
+    + '<div class="ftr">Generated ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) + '<br>This tool is provided for planning purposes only. All calculations are indicative and based on the inputs provided.</div>'
 
     + '</div></body></html>';
 
@@ -441,12 +471,13 @@ function exportPDF() {
 }
 
 // Helper: result card for PDF
-function rc(step, lbl, val, unit, cls) {
+function rc(step, lbl, val, unit, cls, rate) {
   return '<div class="rc ' + cls + '">'
     + '<div class="step">' + step + '</div>'
     + '<div class="lbl">' + lbl + '</div>'
     + '<div class="val">' + val + '</div>'
     + '<div class="unit">' + unit + '</div>'
+    + (rate ? '<div class="rate">' + rate + '</div>' : '')
     + '</div>';
 }
 
@@ -455,6 +486,7 @@ function rc(step, lbl, val, unit, cls) {
 // ============================================================
 function resetForm() {
   document.getElementById('partnerName').value = '';
+  document.getElementById('fiscalYear').value = '';
   document.getElementById('bookingsTarget').value = 1500;
   document.getElementById('existingPipeline').value = 0;
   document.getElementById('avgDeal').value = 150;
@@ -480,6 +512,35 @@ function resetForm() {
 function num(id) { return parseFloat(document.getElementById(id).value) || 0; }
 function fmt(v) { return Number.isFinite(v) ? Math.ceil(v).toLocaleString('en-US', { maximumFractionDigits: 0 }) : '0'; }
 function esc(s) { var el = document.createElement('span'); el.textContent = s; return el.innerHTML; }
+
+// ============================================================
+// TOOLTIP SYSTEM (supports line breaks via | separator)
+// ============================================================
+(function() {
+  var box = document.createElement('div');
+  box.id = 'tipBox';
+  document.body.appendChild(box);
+
+  document.addEventListener('mouseenter', function(e) {
+    if (!e.target.classList.contains('tip')) return;
+    var raw = e.target.getAttribute('data-tip');
+    if (!raw) return;
+    box.innerHTML = raw.split('|').join('<br>');
+    box.style.display = 'block';
+    var r = e.target.getBoundingClientRect();
+    var bw = box.offsetWidth;
+    var left = r.left + r.width / 2 - bw / 2;
+    if (left < 8) left = 8;
+    if (left + bw > window.innerWidth - 8) left = window.innerWidth - bw - 8;
+    box.style.left = left + 'px';
+    box.style.top = (r.top + window.scrollY - box.offsetHeight - 8) + 'px';
+  }, true);
+
+  document.addEventListener('mouseleave', function(e) {
+    if (!e.target.classList.contains('tip')) return;
+    box.style.display = 'none';
+  }, true);
+})();
 
 // ============================================================
 // INIT
