@@ -57,9 +57,9 @@ input:disabled{background:#F5F5F5;color:#888}
 
 /* Funnel */
 .funnel{display:flex;flex-direction:column;align-items:center;gap:0;padding:16px 0;width:100%;max-width:620px;margin:0 auto}
-.fn-seg{width:100%;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;position:relative}
-.fn-seg-lbl{font-size:12px;font-weight:500;opacity:.9;letter-spacing:.2px}
-.fn-seg-val{font-size:17px;font-weight:700}
+.fn-seg{width:100%;height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;position:relative}
+.fn-seg-lbl{font-size:13px;font-weight:500;opacity:.9;letter-spacing:.2px}
+.fn-seg-val{font-size:19px;font-weight:700}
 .fn-rate{color:var(--blue);font-size:12px;font-weight:600;font-style:italic;padding:4px 0;text-align:center}
 
 /* Button */
@@ -173,7 +173,7 @@ input:disabled{background:#F5F5F5;color:#888}
         </div>
       </div>
       <div class="fg">
-        <label>TAM to MQLs Rate (%) <span class="tip" data-tip="TAM (Total Addressable Market): Total number of potential contacts in your total number of addressable accounts.|MQL (Marketing Qualified Lead): Potential customers who have shown enough interest, they are considered more likely to become a customer than other leads.|Industry benchmark conversion is 5% considering a multichannel Demand Generation approach leveraging digital tools and targeting multiple personas at different levels (avg 10 personas per account).|Enter as a percentage, e.g. 5 for 5%.">?</span></label>
+        <label>TAM to MQLs Rate (%) <span class="tip" data-tip="TAM (Total Addressable Market): Total number of potential accounts in your defined focus area.|MQL (Marketing Qualified Lead): Potential customers who have shown enough interest, they are considered more likely to become a customer than other leads.|Industry benchmark conversion is 5% considering a multichannel Demand Generation approach leveraging digital tools and targeting multiple personas at different levels (avg 10 personas per account).|Enter as a percentage, e.g. 5 for 5%.">?</span></label>
         <div class="hint">Target Accounts that become Marketing Qualified Leads</div>
         <div class="inp-wrap">
           <input type="number" id="tamRate" value="5" min="0.1" max="100" step="0.5" class="has-sfx">
@@ -245,17 +245,17 @@ function calculate() {
   var sqls  = cr > 0 ? Math.ceil(vwb / cr) : 0;
   var mqls  = mr > 0 ? Math.ceil(sqls / mr) : 0;
   var tam   = tr > 0 ? Math.ceil(mqls / tr) : 0;
-  var accts = Math.ceil(tam / 10);
+  var contacts = Math.ceil(tam * 10);
 
   lastCalc = {
     partner: document.getElementById('partnerName').value || 'Not specified',
     fy: document.getElementById('fiscalYear').value || 'Not specified',
     bt: bt, ep: ep, cr: num('convRate'), ad: ad, mr: num('mqlRate'), tr: num('tamRate'),
-    bep: bep, rem: rem, vwb: vwb, spt: spt, sqls: sqls, mqls: mqls, tam: tam, accts: accts
+    bep: bep, rem: rem, vwb: vwb, spt: spt, sqls: sqls, mqls: mqls, tam: tam, contacts: contacts
   };
 
-  renderResults(bep, rem, vwb, spt, sqls, mqls, tam, accts, num('convRate'), num('mqlRate'), num('tamRate'), ad);
-  renderFunnel(tam, accts, mqls, sqls, vwb, num('convRate'), num('mqlRate'), num('tamRate'));
+  renderResults(bep, rem, vwb, spt, sqls, mqls, tam, contacts, num('convRate'), num('mqlRate'), num('tamRate'), ad);
+  renderFunnel(contacts, tam, mqls, sqls, vwb, num('convRate'), num('mqlRate'), num('tamRate'));
 
   calculated = true;
   document.getElementById('resultsCard').classList.remove('results-hidden');
@@ -267,16 +267,16 @@ function calculate() {
 // ============================================================
 // RENDER RESULTS
 // ============================================================
-function renderResults(bep, rem, vwb, spt, sqls, mqls, tam, accts, crPct, mrPct, trPct, ad) {
+function renderResults(bep, rem, vwb, spt, sqls, mqls, tam, contacts, crPct, mrPct, trPct, ad) {
   var cards = [
-    { step: 'Intermediate', lbl: 'Bookings from Existing Pipeline',   val: fmt(bep),   unit: 'kEUR',                     cls: '',    rate: 'at ' + crPct + '% conversion rate' },
-    { step: 'Step 1',       lbl: 'Remaining Budget to Retire',        val: fmt(rem),   unit: 'kEUR',                     cls: 'hl',  rate: '' },
-    { step: 'Step 2',       lbl: 'Volume of W/B Required',            val: fmt(vwb),   unit: 'Opportunities',            cls: '',    rate: 'at ' + fmt(ad) + ' kEUR avg deal size' },
-    { step: 'Step 3',       lbl: 'Sales Pipeline (Demand Target)',     val: fmt(spt),   unit: 'kEUR',                     cls: 'hl',  rate: 'at ' + crPct + '% conversion rate' },
-    { step: 'Step 4',       lbl: 'Volume of SQLs Required',           val: fmt(sqls),  unit: 'Sales Qualified Leads',    cls: '',    rate: 'at ' + crPct + '% conversion rate' },
-    { step: 'Step 5',       lbl: 'Volume of MQLs Required',           val: fmt(mqls),  unit: 'Marketing Qualified Leads', cls: '',    rate: 'at ' + mrPct + '% MQL to SQL rate' },
-    { step: 'Step 6',       lbl: 'Total Addressable Market (TAM)',     val: fmt(tam),   unit: 'Target Contacts',          cls: 'pri', rate: 'at ' + trPct + '% TAM to MQL rate' },
-    { step: 'Step 7',       lbl: 'Total Number of Accounts',          val: fmt(accts), unit: 'Accounts',                 cls: 'pri', rate: 'estimating avg 10 people reach per account' }
+    { step: 'Intermediate', lbl: 'Bookings from Existing Pipeline',   val: fmt(bep),      unit: 'kEUR',                     cls: '',    rate: 'at ' + crPct + '% conversion rate' },
+    { step: 'Step 1',       lbl: 'Remaining Budget to Retire',        val: fmt(rem),      unit: 'kEUR',                     cls: 'hl',  rate: '' },
+    { step: 'Step 2',       lbl: 'Volume of W/B Required',            val: fmt(vwb),      unit: 'Opportunities',            cls: '',    rate: 'at ' + fmt(ad) + ' kEUR avg deal size' },
+    { step: 'Step 3',       lbl: 'Sales Pipeline (Demand Target)',     val: fmt(spt),      unit: 'kEUR',                     cls: 'hl',  rate: 'at ' + crPct + '% conversion rate' },
+    { step: 'Step 4',       lbl: 'Volume of SQLs Required',           val: fmt(sqls),     unit: 'Sales Qualified Leads',    cls: '',    rate: 'at ' + crPct + '% conversion rate' },
+    { step: 'Step 5',       lbl: 'Volume of MQLs Required',           val: fmt(mqls),     unit: 'Marketing Qualified Leads', cls: '',    rate: 'at ' + mrPct + '% MQL to SQL rate' },
+    { step: 'Step 6',       lbl: 'Total Addressable Market (TAM)',     val: fmt(tam),      unit: 'Accounts',                cls: 'pri', rate: 'at ' + trPct + '% TAM to MQL rate' },
+    { step: 'Step 7',       lbl: 'Total Potential Contacts',          val: fmt(contacts), unit: 'Contacts',                cls: 'pri', rate: 'estimating avg 10 contacts per account' }
   ];
 
   var h = '';
@@ -295,20 +295,20 @@ function renderResults(bep, rem, vwb, spt, sqls, mqls, tam, accts, crPct, mrPct,
 // ============================================================
 // RENDER FUNNEL
 // ============================================================
-function renderFunnel(tam, accts, mqls, sqls, vwb, crPct, mrPct, trPct) {
-  var vals = [tam, accts, mqls, sqls, vwb];
+function renderFunnel(contacts, tam, mqls, sqls, vwb, crPct, mrPct, trPct) {
+  var vals = [contacts, tam, mqls, sqls, vwb];
   var mx = Math.max.apply(null, vals) || 1;
-  var widths = vals.map(function(v) { return Math.max(Math.pow(v / mx, 0.4) * 100, 14); });
+  var widths = vals.map(function(v) { return Math.max(Math.pow(v / mx, 0.45) * 100, 24); });
 
   var bars = [
-    { lbl: 'TAM (Target Contacts)',        v: tam,   col: '#354A5E' },
-    { lbl: 'Total Number of Accounts',     v: accts, col: '#5A6F7E' },
-    { lbl: 'MQLs Required',               v: mqls,  col: '#6B2ADB' },
-    { lbl: 'SQLs Required',               v: sqls,  col: '#0070F2' },
-    { lbl: 'Won / Booked',       v: vwb,   col: '#188918' }
+    { lbl: 'Total Potential Contacts', v: contacts, col: '#1D2D3E' },
+    { lbl: 'TAM (Accounts)',           v: tam,      col: '#354A5E' },
+    { lbl: 'MQLs',                    v: mqls,     col: '#6B2ADB' },
+    { lbl: 'SQLs',                    v: sqls,     col: '#0070F2' },
+    { lbl: 'Won / Booked',            v: vwb,      col: '#188918' }
   ];
   var rates = [
-    'estimating avg 10 people reach per account',
+    'estimating avg 10 contacts per account',
     'at ' + trPct + '% TAM to MQL rate',
     'at ' + mrPct + '% MQL to SQL rate',
     'at ' + crPct + '% conversion rate'
@@ -317,7 +317,7 @@ function renderFunnel(tam, accts, mqls, sqls, vwb, crPct, mrPct, trPct) {
   var h = '<div class="funnel">';
   bars.forEach(function(b, i) {
     var topW = widths[i];
-    var botW = (i < bars.length - 1) ? widths[i + 1] : topW * 0.85;
+    var botW = (i < bars.length - 1) ? widths[i + 1] : topW * 0.88;
     var tI = (100 - topW) / 2;
     var bI = (100 - botW) / 2;
     h += '<div class="fn-seg" style="background:' + b.col
@@ -340,40 +340,41 @@ function exportPDF() {
   if (!calculated) { alert('Please run the calculation first.'); return; }
 
   var d = lastCalc;
-  var mx = Math.max(d.tam, 1);
+  var mx = Math.max(d.contacts, 1);
 
   var funnelBars = [
-    { lbl: 'TAM (Target Contacts)',       v: d.tam,   col: '#354A5E' },
-    { lbl: 'Total Number of Accounts',    v: d.accts, col: '#5A6F7E' },
-    { lbl: 'MQLs Required',              v: d.mqls,  col: '#6B2ADB' },
-    { lbl: 'SQLs Required',              v: d.sqls,  col: '#0070F2' },
-    { lbl: 'Won / Booked',      v: d.vwb,   col: '#188918' }
+    { lbl: 'Total Potential Contacts', v: d.contacts, col: '#1D2D3E' },
+    { lbl: 'TAM (Accounts)',           v: d.tam,      col: '#354A5E' },
+    { lbl: 'MQLs',                    v: d.mqls,     col: '#6B2ADB' },
+    { lbl: 'SQLs',                    v: d.sqls,     col: '#0070F2' },
+    { lbl: 'Won / Booked',            v: d.vwb,      col: '#188918' }
   ];
   var funnelRates = [
-    'estimating avg 10 people reach per account',
+    'estimating avg 10 contacts per account',
     'at ' + d.tr + '% TAM to MQL rate',
     'at ' + d.mr + '% MQL to SQL rate',
     'at ' + d.cr + '% conversion rate'
   ];
 
-  var fVals = [d.tam, d.accts, d.mqls, d.sqls, d.vwb];
-  var fWidths = fVals.map(function(v) { return Math.max(Math.pow(v / mx, 0.4) * 100, 14); });
+  var fVals = [d.contacts, d.tam, d.mqls, d.sqls, d.vwb];
+  var fWidths = fVals.map(function(v) { return Math.max(Math.pow(v / mx, 0.45) * 100, 24); });
 
-  var funnelHTML = '';
+  var funnelHTML = '<div style="display:flex;flex-direction:column;align-items:center;width:100%;max-width:520px;margin:0 auto">';
   funnelBars.forEach(function(b, i) {
     var topW = fWidths[i];
-    var botW = (i < funnelBars.length - 1) ? fWidths[i + 1] : topW * 0.85;
+    var botW = (i < funnelBars.length - 1) ? fWidths[i + 1] : topW * 0.88;
     var tI = (100 - topW) / 2;
     var bI = (100 - botW) / 2;
-    funnelHTML += '<div style="width:100%;height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;background:' + b.col
+    funnelHTML += '<div style="width:100%;height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;background:' + b.col
       + ';clip-path:polygon(' + tI + '% 0,' + (100 - tI) + '% 0,' + (100 - bI) + '% 100%,' + bI + '% 100%);-webkit-clip-path:polygon(' + tI + '% 0,' + (100 - tI) + '% 0,' + (100 - bI) + '% 100%,' + bI + '% 100%)">'
-      + '<div style="font-size:11px;font-weight:500;opacity:.9">' + b.lbl + '</div>'
-      + '<div style="font-size:16px;font-weight:700">' + fmt(b.v) + '</div>'
+      + '<div style="font-size:13px;font-weight:500;opacity:.9">' + b.lbl + '</div>'
+      + '<div style="font-size:18px;font-weight:700">' + fmt(b.v) + '</div>'
       + '</div>';
     if (i < funnelBars.length - 1) {
       funnelHTML += '<div style="color:#0070F2;font-size:12px;font-weight:600;font-style:italic;padding:4px 0;text-align:center">' + funnelRates[i] + '</div>';
     }
   });
+  funnelHTML += '</div>';
 
   var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
     + '<title>Demand Calculator Results - ' + esc(d.partner) + '</title>'
@@ -441,8 +442,8 @@ function exportPDF() {
     + rc('Step 3', 'Sales Pipeline (Demand Target)', fmt(d.spt), 'kEUR', 'hl', 'at ' + d.cr + '% conversion rate')
     + rc('Step 4', 'Volume of SQLs Required', fmt(d.sqls), 'Sales Qualified Leads', '', 'at ' + d.cr + '% conversion rate')
     + rc('Step 5', 'Volume of MQLs Required', fmt(d.mqls), 'Marketing Qualified Leads', '', 'at ' + d.mr + '% MQL to SQL rate')
-    + rc('Step 6', 'Total Addressable Market (TAM)', fmt(d.tam), 'Target Contacts', 'pri', 'at ' + d.tr + '% TAM to MQL rate')
-    + rc('Step 7', 'Total Number of Accounts', fmt(d.accts), 'Accounts', 'pri', 'estimating avg 10 people reach per account')
+    + rc('Step 6', 'Total Addressable Market (TAM)', fmt(d.tam), 'Accounts', 'pri', 'at ' + d.tr + '% TAM to MQL rate')
+    + rc('Step 7', 'Total Potential Contacts', fmt(d.contacts), 'Contacts', 'pri', 'estimating avg 10 contacts per account')
     + '</div>'
     + '</div>'
 
