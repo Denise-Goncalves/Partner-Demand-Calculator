@@ -112,7 +112,8 @@ input:disabled{background:#F5F5F5;color:#888}
 
   <!-- Instructions -->
   <div class="info">
-    Use this calculator to determine the demand generation activity required to meet your cloud bookings target. Fill in your inputs below, then press <strong>Calculate</strong> to see your full demand funnel: from required pipeline volume through to your Total Addressable Market (TAM).
+    &#8226; Use this calculator to determine the demand generation activity required to meet your cloud bookings target.<br>
+    &#8226; Fill in your inputs below, then press <strong>Calculate</strong> to see your full demand funnel: from required pipeline volume through to your Total Addressable Market (TAM).
   </div>
 
   <!-- Section 1: Partner Information -->
@@ -526,7 +527,7 @@ function esc(s) { var el = document.createElement('span'); el.textContent = s; r
     if (!e.target.classList.contains('tip')) return;
     var raw = e.target.getAttribute('data-tip');
     if (!raw) return;
-    box.innerHTML = raw.split('|').join('<br>');
+    box.innerHTML = raw.split('|').map(function(s){ return '\u2022 ' + s.trim(); }).join('<br>');
     box.style.display = 'block';
     var r = e.target.getBoundingClientRect();
     var bw = box.offsetWidth;
